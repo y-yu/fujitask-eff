@@ -7,7 +7,7 @@ scalaVersion := "2.12.8"
 resolvers += Resolver.sonatypeRepo("snapshots")
 
 libraryDependencies ++= Seq(
-  // masterブランチをSNAPSHO版としてリリースした。
+  // masterブランチをSNAPSHOT版としてリリースした。
   "com.github.y-yu" %% "kits-eff" % "0.10.0-SNAPSHOT",
   "org.scalikejdbc" %% "scalikejdbc"       % "3.3.2",
   "org.scalikejdbc" %% "scalikejdbc-config" % "3.3.2",
