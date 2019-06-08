@@ -1,6 +1,8 @@
 Fujitask Eff
 ========================
 
+[![Build Status](https://travis-ci.org/y-yu/fujitask-eff.svg?branch=master)](https://travis-ci.org/y-yu/fujitask-eff)
+
 ## How to use
 
 ```console
