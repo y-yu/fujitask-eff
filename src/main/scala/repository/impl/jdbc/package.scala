@@ -8,10 +8,10 @@ import scala.concurrent.{ExecutionContext, Future}
 package object jdbc {
   implicit def readRunner[I >: ReadTransaction](implicit ec: ExecutionContext): FujitaskRunner[I] =
     new FujitaskRunner[I] {
-      def apply[A](task: I => ExecutionContext => Future[A]): Future[A] = {
+      def apply[A](task: I => Future[A]): Future[A] = {
         println("ReadRunner begin --------->")
         val session = DB.readOnlySession()
-        val future = task(new ScalikeJDBCReadTransaction(session))(ec)
+        val future = task(new ScalikeJDBCReadTransaction(session))
         future.onComplete { _ =>
           session.close()
           println("<--------- ReadRunner end")
@@ -23,9 +23,9 @@ package object jdbc {
 
   implicit def readWriteRunner[I >: ReadWriteTransaction](implicit ec: ExecutionContext): FujitaskRunner[I] =
     new FujitaskRunner[I] {
-      def apply[A](task: I => ExecutionContext => Future[A]): Future[A] = {
+      def apply[A](task: I => Future[A]): Future[A] = {
         println("ReadWriteRunner begin --------->")
-        val future = DB.futureLocalTx(session => task(new ScalikeJDBCWriteTransaction(session))(ec))
+        val future = DB.futureLocalTx(session => task(new ScalikeJDBCWriteTransaction(session)))
         future.onComplete(_ =>
           println("<--------- ReadWriteRunner end")
         )
