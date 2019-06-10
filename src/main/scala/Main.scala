@@ -1,4 +1,5 @@
 import java.util.concurrent.TimeUnit
+
 import com.google.inject.Guice
 import config.di.DefaultModule
 import domain.entity.User
@@ -6,6 +7,7 @@ import fujitask.eff.Fujitask
 import repository.UserRepository
 import infra.db.Database
 import infra.ec.ExecutionContextProvider
+
 import scala.concurrent.{Await, ExecutionContext, Future}
 import scala.concurrent.duration.Duration
 import repository.impl.jdbc._
@@ -26,30 +28,16 @@ object Main {
     Future(Database.close())
 
   def userEff(): Future[User] = {
-    import fujitask.eff.FujitaskEffect._
     val userRepository: UserRepository = injector.getInstance(classOf[UserRepository])
 
-    // `<-`でカスタムした`flatMap`がつかいたい……。
     val eff = for {
       user1 <- userRepository.read(1L)
-      user2 <- userRepository.create("test")
-      user3 <- userRepository.read(1L)
-    } yield user3.get
+      _     <- userRepository.create("test")
+      user2 <- userRepository.read(1L)
+      _     <- userRepository.create("test2")
+    } yield user2.get
 
-    val f1 = new FujitaskEffImplicit(userRepository.read(1L))
-      .flatMap(_ =>
-        new FujitaskEffImplicit(userRepository.create("test")).flatMap(_ =>
-          new FujitaskEffImplicit(userRepository.read(1L)).map(user3 =>
-            user3.get
-          )
-        )
-      )
-
-    Fujitask.run(f1).flatMap(user =>
-      Fujitask.run(
-        userRepository.read(user.id).map(_.get)
-      )
-    )
+    Fujitask.run(eff)
   }
 
   def main(args: Array[String]): Unit = {
