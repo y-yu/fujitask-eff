@@ -1,10 +1,16 @@
 package repository.impl.jdbc
 
 import scalikejdbc.DBSession
-import fujitask._
+import repository.{ReadTransaction, ReadWriteTransaction, Transaction}
 
-abstract class ScalikeJDBCTransaction(val ctx: DBSession) extends Transaction
+trait ScalikeJDBCTransaction extends Transaction {
+  val ctx: DBSession
+}
 
-class ScalikeJDBCReadTransaction(ctx: DBSession) extends ScalikeJDBCTransaction(ctx) with ReadTransaction
+class ScalikeJDBCReadTransaction(val ctx: DBSession)
+    extends ScalikeJDBCTransaction
+      with ReadTransaction
 
-class ScalikeJDBCWriteTransaction(ctx: DBSession) extends ScalikeJDBCReadTransaction(ctx) with ReadWriteTransaction
+class ScalikeJDBCWriteTransaction(override val ctx: DBSession)
+  extends ScalikeJDBCReadTransaction(ctx)
+    with ReadWriteTransaction

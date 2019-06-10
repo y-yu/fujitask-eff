@@ -2,15 +2,13 @@ package repository
 
 import domain.entity.User
 import kits.eff.Eff
-import fujitask._
-import fujitask.eff.Fujitask
 
 trait UserRepository {
-  def create(name: String): Eff[Fujitask[ReadWriteTransaction], User]
+  def create(name: String): Eff[ReadWriteTransaction, User]
 
-  def read(id: Long): Eff[Fujitask[ReadTransaction], Option[User]]
+  def read(id: Long): Eff[ReadTransaction, Option[User]]
 
-  def update(user: User): Eff[Fujitask[ReadWriteTransaction], Unit]
+  def update(user: User): Eff[ReadWriteTransaction, Unit]
 
-  def delete(id: Long): Eff[Fujitask[ReadWriteTransaction], Unit]
+  def delete(id: Long): Eff[ReadWriteTransaction, Unit]
 }
