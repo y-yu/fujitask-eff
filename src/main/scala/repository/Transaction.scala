@@ -1,8 +1,10 @@
 package repository
 
-import fujitask.eff.Fujitask.Session
+import fujitask.eff.Fujitask.Transaction
 
-trait Transaction extends Session
+//import fujitask.eff.Fujitask.Session
+
+//trait Transaction
 
 trait ReadTransaction extends Transaction
 

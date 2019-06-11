@@ -15,8 +15,19 @@ val eff = for {
   _     <- userRepository.create("test2")
 } yield user2.get
 
-Fujitask.run(eff)
+Fujitask.run(eff) // User(1, test)
 ```
+
+And we can use this with any other monads in the same `for`-`yield`.
+
+```scala
+val eff = for {
+  n <- Reader.ask[String]
+  user <- userRepository.create(n)
+} yield user
+
+Fujitask.run(Reader.run("test")(eff)) // User(1, test)
+``` 
 
 ## How to use
 

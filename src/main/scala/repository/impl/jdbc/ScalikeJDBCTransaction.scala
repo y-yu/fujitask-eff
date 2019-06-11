@@ -1,7 +1,8 @@
 package repository.impl.jdbc
 
+import fujitask.eff.Fujitask.Transaction
 import scalikejdbc.DBSession
-import repository.{ReadTransaction, ReadWriteTransaction, Transaction}
+import repository.{ReadTransaction, ReadWriteTransaction}
 
 trait ScalikeJDBCTransaction extends Transaction {
   val ctx: DBSession
