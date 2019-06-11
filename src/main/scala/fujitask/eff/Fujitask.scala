@@ -1,6 +1,7 @@
 package fujitask.eff
 
 import kits.eff.{ApplicativeInterpreter, Eff, Fx}
+import repository.Transaction
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -10,8 +11,8 @@ object Fujitask {
   def apply[I, A](a: => A): Eff[I, A] =
     Eff(Execute(Future(a)(_)))
 
-  def ask[I <: Session: Manifest](): Eff[I, I] =
-    Eff(Ask[I]())
+  def ask[R <: Transaction, I <: Session with R]: Eff[R, I] =
+    Eff(Ask())
 
   def run[I <: Session: Manifest, A](
     eff: Eff[I, A]
@@ -49,7 +50,7 @@ object Fujitask {
   final case class Execute[A](f: ExecutionContext => Future[A])
     extends Fujitask with Fx[A]
 
-  abstract case class Session() extends Fujitask with Fx[Session]
+  final case class Ask[I <: Session]() extends Fujitask with Fx[I]
 
-  case class Ask[I <: Session]() extends Fujitask with Fx[I]
+  abstract case class Session() extends Fujitask with Fx[Session]
 }

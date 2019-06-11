@@ -51,7 +51,7 @@ class UserRepositoryImplSpec
       user3Opt <- sut.read(user1.id)
       _ <- sut.delete(user1.id)
       user4Opt <- sut.read(user1.id)
-      i <- ask[ReadWriteTransaction, ScalikeJDBCWriteTransaction]
+      i <- Fujitask.ask[ReadWriteTransaction, ScalikeJDBCWriteTransaction]
     } yield {
       assert(user1 == User(1L, "test"))
       assert(user2Opt.contains(User(1L, "test")))
@@ -66,7 +66,7 @@ class UserRepositoryImplSpec
   it should "read a user in Read only transaction successfully" in new SetUp {
     val actual = for {
       _ <- sut.read(1L)
-      i <- ask[ReadTransaction, ScalikeJDBCReadTransaction]
+      i <- Fujitask.ask[ReadTransaction, ScalikeJDBCReadTransaction]
     } yield {
       assert(i.isInstanceOf[ScalikeJDBCReadTransaction])
     }

@@ -24,8 +24,8 @@ object Main {
     Database.createTable()
   }
 
-  def tearDown(): Future[Unit] =
-    Future(Database.close())
+  def tearDown(): Unit =
+    Database.close()
 
   def userEff(): Future[User] = {
     val userRepository: UserRepository = injector.getInstance(classOf[UserRepository])
