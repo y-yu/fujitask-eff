@@ -7,6 +7,7 @@ import config.di.DefaultModule
 import domain.entity.User
 import fujitask.eff.Fujitask
 import infra.db.Database
+import kits.eff.Reader
 import org.scalatest.{DiagrammedAssertions, FlatSpec}
 import repository.{ReadTransaction, ReadWriteTransaction, UserRepository}
 
@@ -72,6 +73,19 @@ class UserRepositoryImplSpec
     }
 
     values(Fujitask.run(actual))
+  }
+
+  it should "be able to use if the effect stack has an other effect(Reader)" in new SetUp {
+    val name = "test"
+
+    val actual = for {
+      n <- Reader.ask[String]
+      user1 <- sut.create(n)
+    } yield {
+      assert(user1.name == name)
+    }
+
+    values(Fujitask.run(Reader.run("test")(actual)))
   }
 
 }

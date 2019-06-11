@@ -1,10 +1,10 @@
 package repository.impl
 
-import fujitask.eff.Fujitask.{Ask, Session}
+import fujitask.eff.Fujitask.Ask
 import fujitask.eff.FujitaskRunner
 import kits.eff.Eff
 import scalikejdbc.DB
-import repository.{ReadTransaction, ReadWriteTransaction, Transaction}
+import repository.{ReadTransaction, ReadWriteTransaction}
 
 import scala.concurrent.{ExecutionContext, Future}
 
