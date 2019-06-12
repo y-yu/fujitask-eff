@@ -1,6 +1,7 @@
 package infra.ec
 
 import com.google.inject.{Provider, Singleton}
+
 import scala.concurrent.ExecutionContext
 
 @Singleton
