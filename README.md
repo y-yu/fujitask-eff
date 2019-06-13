@@ -5,7 +5,7 @@ Fujitask Eff
 
 ## Abstract
 
-This is a abstract data structure for transactions of databases by Extensible Effects. It can determine automatically which minimal transaction will be needed for executing the SQL.
+This is a abstract data structure for transactions of databases by Extensible Effects. It can determine automatically which minimal transaction will be needed for executing SQLs.
 
 For example, 
 
@@ -95,12 +95,12 @@ And it can be tested as follows.
 
 ## Acknowledgments
 
-I would like to thank @halcat0x15a for many advices to implement.
+I would like to thank [@halcat0x15a](https://github.com/halcat0x15a) for many advices to implement.
 
 ## References
 
 - [Extensible Effectsでトランザクションモナド“Fujitask”を作る](https://qiita.com/yyu/items/fbd6edc00abb6395dabb)
-    - my article for this implementation written in Japanese
+    - This is my article for this implementation written in Japanese
 - [ドワンゴ秘伝のトランザクションモナドを解説！](https://qiita.com/pab_tech/items/86e4c31d052c678f6fa6)
 - [kits-eff](https://github.com/halcat0x15a/kits-eff)
 - [進捗大陸05](https://booth.pm/ja/items/1309694)
