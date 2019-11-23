@@ -83,14 +83,13 @@ If you would like to get more information about this, please contact me. I will 
 You can try it by the following command.
 
 ```console
-./sbt run
+sbt "example/run"
 ```
 
 And it can be tested as follows.
 
-
 ```console
-./sbt test
+sbt "example/test"
 ```
 
 ## Acknowledgments

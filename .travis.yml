@@ -12,7 +12,7 @@ scala:
   - 2.12.8
 
 script:
-  - sbt run test
+  - sbt ";fujitaskEff/compile ;example/run ;example/test"
 
 before_cache:
   - find $HOME/.sbt -name "*.lock" | xargs rm
