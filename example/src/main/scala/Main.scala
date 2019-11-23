@@ -3,14 +3,13 @@ import java.util.concurrent.TimeUnit
 import com.google.inject.Guice
 import config.di.DefaultModule
 import fujitask.eff.Fujitask
-import repository.UserRepository
 import infra.db.Database
 import infra.ec.ExecutionContextProvider
 import kits.eff.Reader
 import org.slf4j.{Logger, LoggerFactory}
-
-import scala.concurrent.{Await, ExecutionContext, Future}
+import repository.UserRepository
 import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future}
 import repository.impl.jdbc._
 
 object Main {
