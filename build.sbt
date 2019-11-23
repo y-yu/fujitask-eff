@@ -29,6 +29,7 @@ lazy val example = (project in file("example"))
       "com.google.inject" % "guice" % "4.2.2"
     )
   )
+  .settings(publishSettings)
   .dependsOn(fujitaskEff)
 
 lazy val fujitaskEff = (project in file("fujitask-eff"))
@@ -52,6 +53,7 @@ lazy val fujitaskEff = (project in file("fujitask-eff"))
       "com.github.y-yu" %% "kits-eff" % "0.10.0-SNAPSHOT"
     )
   )
+  .settings(publishSettings)
 
 lazy val publishSettings = Seq(
   publishMavenStyle := true,
