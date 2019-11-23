@@ -16,6 +16,7 @@ import org.scalatest._
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
+import scala.util.Try
 
 class UserRepositoryImplSpec
   extends FlatSpec
@@ -88,4 +89,16 @@ class UserRepositoryImplSpec
     values(Fujitask.run(Reader.run("test")(actual)))
   }
 
+  it should "rollback if illegal queries was executed" in new SetUp {
+    assert(Database.isEmpty)
+
+    val actual = for {
+      _ <- sut.create("test")
+      // `name` has a not null constraint so that this is illegal.
+      _ <- sut.create(null)
+    } yield ()
+
+    assert(Try(values(Fujitask.run(actual))).isFailure)
+    assert(Database.isEmpty)
+  }
 }
