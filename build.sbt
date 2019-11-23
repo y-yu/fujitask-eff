@@ -6,11 +6,20 @@ import UpdateReadme.updateReadme
 val scala212 = "2.12.8"
 
 lazy val root = (project in file("."))
+  .settings(
+    publishArtifact := false,
+    publish := {},
+    publishLocal := {},
+  )
+  .settings(publishSettings)
   .aggregate(fujitaskEff, example)
 
 lazy val example = (project in file("example"))
   .settings(
     scalaVersion := scala212,
+    publishArtifact := false,
+    publish := {},
+    publishLocal := {},
     libraryDependencies ++= Seq(
       "org.scalikejdbc" %% "scalikejdbc"       % "3.4.0",
       "org.scalikejdbc" %% "scalikejdbc-config" % "3.4.0",
@@ -43,7 +52,6 @@ lazy val fujitaskEff = (project in file("fujitask-eff"))
       "com.github.y-yu" %% "kits-eff" % "0.10.0-SNAPSHOT"
     )
   )
-  .settings(publishSettings)
 
 lazy val publishSettings = Seq(
   publishMavenStyle := true,

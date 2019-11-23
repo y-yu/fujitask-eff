@@ -3,6 +3,12 @@ Fujitask Eff
 
 [![Build Status](https://travis-ci.org/y-yu/fujitask-eff.svg?branch=master)](https://travis-ci.org/y-yu/fujitask-eff)
 
+## Install
+
+```scala
+libraryDependencies += "com.github.y-yu" %% "fujitask-eff" % "0.1.0"
+```
+
 ## Abstract
 
 This is a abstract data structure for transactions of databases by Extensible Effects. It can determine automatically which minimal transaction will be needed for executing SQLs.
