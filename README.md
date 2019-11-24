@@ -6,7 +6,7 @@ Fujitask Eff
 ## Install
 
 ```scala
-libraryDependencies += "com.github.y-yu" %% "fujitask-eff" % "0.1.0"
+libraryDependencies += "com.github.y-yu" %% "fujitask-eff" % "0.2.1"
 ```
 
 ## Abstract
