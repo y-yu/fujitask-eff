@@ -3,10 +3,11 @@ import sbt._
 import ReleaseTransformations._
 import UpdateReadme.updateReadme
 
-val scala212 = "2.12.8"
+val scala213 = "2.13.1"
 
 lazy val root = (project in file("."))
   .settings(
+    name := "fujitask-eff-root",
     publishArtifact := false,
     publish := {},
     publishLocal := {},
@@ -16,7 +17,7 @@ lazy val root = (project in file("."))
 
 lazy val example = (project in file("example"))
   .settings(
-    scalaVersion := scala212,
+    scalaVersion := scala213,
     publishArtifact := false,
     publish := {},
     publishLocal := {},
@@ -41,7 +42,7 @@ lazy val fujitaskEff = (project in file("fujitask-eff"))
       "-language:implicitConversions", "-language:higherKinds", "-language:existentials",
       "-unchecked"
     ),
-    scalaVersion := scala212,
+    scalaVersion := scala213,
     resolvers += Resolver.sonatypeRepo("snapshots"),
     organization := "com.github.y-yu",
     name := "fujitask-eff",
@@ -49,8 +50,7 @@ lazy val fujitaskEff = (project in file("fujitask-eff"))
     homepage := Some(url("https://github.com/y-yu")),
     licenses := Seq("MIT" -> url(s"https://github.com/y-yu/fujitask-eff/blob/master/LICENSE")),
     libraryDependencies ++= Seq(
-      //"org.halcat" %% "kits-eff" % "0.10.0-SNAPSHOT",
-      "com.github.y-yu" %% "kits-eff" % "0.10.0-SNAPSHOT"
+      "org.halcat" %% "kits-eff" % "0.10.0"
     )
   )
   .settings(publishSettings)
