@@ -22,25 +22,23 @@ object Fujitask {
     def handle(i: I) = new ApplicativeInterpreter[Fujitask, Any] {
       override type Result[T] = Future[T]
 
+      def functor[T, B](fa: Future[T])(k: T => B): Future[B] = fa.map(k)
+
       def pure[T](a: T): Eff[Any, Result[T]] = Eff.Pure(Future.successful(a))
 
-      def flatMap[T, B](fa: Fujitask with Fx[T])(k: T => Eff[Any, Future[B]]): Eff[Any, Future[B]] =
-        fa match {
-          case Execute(f) =>
-            Eff.Pure(f(ec).flatMap(a => Eff.run(k(a))))
-          case _: Ask[I] =>
-            k(i.asInstanceOf[T])
-        }
+      def flatMap[T, B](k: T => Eff[Any, Future[B]]): PartialFunction[Fx[T], Eff[Any, Future[B]]] = {
+        case Execute(f) =>
+          Eff.Pure(f(ec).flatMap(a => Eff.run(k(a))))
+        case _: Ask[I] =>
+          k(i.asInstanceOf[T])
+      }
 
-      def ap[T, B](fa: Fujitask with Fx[T])(k: Eff[Any, Result[T => B]]): Eff[Any, Result[B]] =
-        fa match {
-          case Execute(f) =>
-            Eff.Pure(f(ec).flatMap(a => Eff.run(k).map(_(a))))
-          case _: Ask[I] =>
-            k.map(_.map(_(i.asInstanceOf[T])))
-        }
-
-      def map[T, B](fa: Future[T])(k: T => B): Future[B] = fa.map(k)
+      def ap[T, B](k: Eff[Any, Future[T => B]]): PartialFunction[Fx[T], Eff[Any, Future[B]]] = {
+        case Execute(f) =>
+          Eff.Pure(f(ec).flatMap(a => Eff.run(k).map(_(a))))
+        case _: Ask[I] =>
+          k.map(_.map(_(i.asInstanceOf[T])))
+      }
     }
 
     runner(i => Eff.run(handle(i)(eff.asInstanceOf[Eff[Fujitask, A]])))
