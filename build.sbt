@@ -7,7 +7,7 @@ val scala213 = "2.13.1"
 
 lazy val root = (project in file("."))
   .settings(
-    name := "fujitask-eff-root",
+    name := "fujitask-eff",
     publishArtifact := false,
     publish := {},
     publishLocal := {},
