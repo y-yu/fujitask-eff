@@ -1,5 +1,6 @@
 package infra.db
 
+import domain.entity.{User, UserId}
 import scalikejdbc._
 import scalikejdbc.config.DBs
 
@@ -17,6 +18,10 @@ object Database {
 
   private val count = sql"""
     select count(1) from `user`
+  """
+
+  private val allUserIds = sql"""
+    select * from `user`
   """
 
   def setUp(): Unit = DBs.setupAll()
@@ -39,5 +44,11 @@ object Database {
     (DB readOnly { implicit s =>
       count.map(_.int(1)).single.apply()
     }).map(_ == 0).get
+  }
+
+  def getAllUsers: Seq[User] = {
+    DB.readOnly { implicit s =>
+      allUserIds.map(u => User(UserId(u.long(1)), u.string(2))).list.apply()
+    }
   }
 }

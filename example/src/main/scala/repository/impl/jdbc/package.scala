@@ -4,8 +4,8 @@ import fujitask.eff.FujitaskRunner
 import org.slf4j.{Logger, LoggerFactory}
 import scalikejdbc.DB
 import repository.{ReadTransaction, ReadWriteTransaction}
-
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success}
 
 package object jdbc {
   lazy val logger: Logger = LoggerFactory.getLogger(this.getClass)
@@ -28,10 +28,15 @@ package object jdbc {
     new FujitaskRunner[I] {
       def apply[A](task: I => Future[A]): Future[A] = {
         logger.info("ReadWriteRunner begin --------->")
-        val future = DB.futureLocalTx(session => task(new ScalikeJDBCWriteTransaction(session)))
-        future.onComplete(_ =>
-          logger.info("<--------- ReadWriteRunner end")
-        )
+        val future = DB.futureLocalTx { session =>
+          task(new ScalikeJDBCWriteTransaction(session))
+        }
+        future.onComplete {
+          case Success(_) =>
+            logger.info("<--------- ReadWriteRunner end")
+          case Failure(e) =>
+            logger.warn(s"failed!: ${e.getMessage}")
+        }
         future
       }
     }
