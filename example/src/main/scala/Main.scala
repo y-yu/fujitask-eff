@@ -1,11 +1,14 @@
 import java.util.concurrent.TimeUnit
-
 import com.google.inject.Guice
 import config.di.DefaultModule
+import domain.entity.UserId
+import domain.exception.UserException
+import domain.exception.UserException.NoSuchUserException
+import domain.usecase.UpdateUserNameUseCase
 import fujitask.eff.Fujitask
 import infra.db.Database
 import infra.ec.ExecutionContextProvider
-import kits.eff.Reader
+import kits.eff.{Exc, Opt, Reader}
 import org.slf4j.{Logger, LoggerFactory}
 import repository.UserRepository
 import scala.concurrent.duration.Duration
@@ -33,16 +36,14 @@ object Main {
     val userRepository: UserRepository = injector.getInstance(classOf[UserRepository])
 
     val eff1 = for {
-      user1 <- userRepository.read(1L)
       _     <- userRepository.create("test")
-      user2 <- userRepository.read(1L)
+      user2 <- userRepository.read(UserId(1L))
     } yield {
-      logger.info(s"user1 is $user1")
       logger.info(s"user2 is $user2")
     }
 
     val eff2 = for {
-      user3 <- userRepository.read(1L)
+      user3 <- userRepository.read(UserId(1L))
     } yield {
       logger.info(s"user3 is $user3")
     }
@@ -53,15 +54,32 @@ object Main {
       user4 <- userRepository.read(user.id)
     } yield {
       logger.info(s"user4 is $user4")
+      user
+    }
+    val updateUserNameUseCase = injector.getInstance(classOf[UpdateUserNameUseCase])
+
+    val eff4 = for {
+      user <- userRepository.create("piyopiyo")
+      _ = logger.info(s"$user name is piyopiyo.")
+      updatedUser <- updateUserNameUseCase.updateUserName(
+        user.id, "hogehoge!!!!!!!!!!!!!!!"
+      )
+      a <- Exc.raise[UserException](NoSuchUserException("aaa"))
+    } yield {
+      logger.info(s"user5 is $updatedUser")
     }
 
     values {
       for {
-        _ <- Fujitask.run(eff1)
-        _ <- Fujitask.run(eff2)
-        _ <- Fujitask.run(Reader.run("piyo")(eff3))
+        _ <- Fujitask.run(Opt.run(eff1))
+        _ <- Fujitask.run(Opt.run(eff2))
+        _ <- Fujitask.run(Opt.run(Reader.run("piyo")(eff3)))
+        _ = logger.info(s"There are ${Database.getAllUsers} users (1)")
+        _ <- Fujitask.runWithEither(eff4)
       } yield ()
     }
+
+    logger.info(s"There are ${Database.getAllUsers} users")
   }
 
   def main(args: Array[String]): Unit = {

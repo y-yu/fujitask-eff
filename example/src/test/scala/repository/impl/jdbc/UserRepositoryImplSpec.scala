@@ -1,19 +1,16 @@
 package repository.impl.jdbc
 
 import java.util.concurrent.TimeUnit
-
 import com.google.inject.Guice
 import config.di.DefaultModule
-import domain.entity.User
+import domain.entity.{User, UserId}
 import fujitask.eff.Fujitask
 import infra.db.Database
-import kits.eff.Reader
+import kits.eff.{Exc, Opt, Reader}
 import org.scalatest.{DiagrammedAssertions, FlatSpec}
 import repository.{ReadTransaction, ReadWriteTransaction, UserRepository}
-
 import scala.concurrent.ExecutionContext.Implicits.global
 import org.scalatest._
-
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, Future}
 import scala.util.Try
@@ -48,16 +45,16 @@ class UserRepositoryImplSpec
   "UserRepository" should "create/read/update/delete a user in ReadWrite transaction successfully" in new SetUp {
     val actual = for {
       user1 <- sut.create("test")
-      user2Opt <- sut.read(user1.id)
+      user2Opt <- Opt.run(sut.read(user1.id))
       _ <- sut.update(user1.copy(name = "changed"))
-      user3Opt <- sut.read(user1.id)
+      user3Opt <- Opt.run(sut.read(user1.id))
       _ <- sut.delete(user1.id)
-      user4Opt <- sut.read(user1.id)
+      user4Opt <- Opt.run(sut.read(user1.id))
       i <- Fujitask.ask[ReadWriteTransaction, ScalikeJDBCWriteTransaction]
     } yield {
-      assert(user1 == User(1L, "test"))
-      assert(user2Opt.contains(User(1L, "test")))
-      assert(user3Opt.contains(User(1L, "changed")))
+      assert(user1 == User(UserId(1L), "test"))
+      assert(user2Opt.contains(User(UserId(1L), "test")))
+      assert(user3Opt.contains(User(UserId(1L), "changed")))
       assert(user4Opt.isEmpty)
       assert(i.isInstanceOf[ScalikeJDBCWriteTransaction])
     }
@@ -67,7 +64,7 @@ class UserRepositoryImplSpec
 
   it should "read a user in Read only transaction successfully" in new SetUp {
     val actual = for {
-      _ <- sut.read(1L)
+      _ <- Opt.run(sut.read(UserId(1L)))
       i <- Fujitask.ask[ReadTransaction, ScalikeJDBCReadTransaction]
     } yield {
       assert(i.isInstanceOf[ScalikeJDBCReadTransaction])
@@ -100,5 +97,35 @@ class UserRepositoryImplSpec
 
     assert(Try(values(Fujitask.run(actual))).isFailure)
     assert(Database.isEmpty)
+  }
+
+  it should "rollback if Either.Left and using `runWithEither`" in new SetUp {
+    assert(Database.isEmpty)
+
+    val eff = for {
+      _ <- sut.create("test")
+      _ <- Exc.raise(new RuntimeException())
+    } yield ()
+
+    val actual = Try(values(Fujitask.runWithEither(eff)))
+
+    assert(actual.isSuccess)
+    assert(actual.get.isLeft)
+    assert(Database.isEmpty)
+  }
+
+  it should "NOT rollback if Either.Left but using `run`" in new SetUp {
+    assert(Database.isEmpty)
+
+    val eff = for {
+      _ <- sut.create("test")
+      _ <- Exc.raise(new RuntimeException())
+    } yield ()
+
+    val actual = Try(values(Fujitask.run(Exc.run(eff))))
+
+    assert(actual.isSuccess)
+    assert(actual.get.isLeft)
+    assert(!Database.isEmpty)
   }
 }

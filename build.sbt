@@ -10,7 +10,7 @@ lazy val root = (project in file("."))
     name := "fujitask-eff",
     publishArtifact := false,
     publish := {},
-    publishLocal := {},
+    publishLocal := {}
   )
   .settings(publishSettings)
   .aggregate(fujitaskEff, example)
