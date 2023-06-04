@@ -27,7 +27,7 @@ lazy val example = (project in file("example"))
       "com.h2database"  %  "h2"                % "1.4.200",
       "ch.qos.logback"  %  "logback-classic"   % "1.2.3",
       "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-      "com.google.inject" % "guice" % "4.2.2"
+      "com.google.inject" % "guice" % "4.2.3"
     )
   )
   .settings(publishSettings)
