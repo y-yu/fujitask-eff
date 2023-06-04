@@ -26,7 +26,7 @@ lazy val example = (project in file("example"))
       "org.scalikejdbc" %% "scalikejdbc-config" % "3.4.0",
       "com.h2database"  %  "h2"                % "1.4.200",
       "ch.qos.logback"  %  "logback-classic"   % "1.2.3",
-      "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+      "org.scalatest" %% "scalatest" % "3.0.9" % "test",
       "com.google.inject" % "guice" % "4.2.2"
     )
   )
