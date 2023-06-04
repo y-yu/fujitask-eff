@@ -22,8 +22,8 @@ lazy val example = (project in file("example"))
     publish := {},
     publishLocal := {},
     libraryDependencies ++= Seq(
-      "org.scalikejdbc" %% "scalikejdbc"       % "3.4.0",
-      "org.scalikejdbc" %% "scalikejdbc-config" % "3.4.0",
+      "org.scalikejdbc" %% "scalikejdbc"       % "3.4.2",
+      "org.scalikejdbc" %% "scalikejdbc-config" % "3.4.2",
       "com.h2database"  %  "h2"                % "1.4.200",
       "ch.qos.logback"  %  "logback-classic"   % "1.2.3",
       "org.scalatest" %% "scalatest" % "3.0.8" % "test",
