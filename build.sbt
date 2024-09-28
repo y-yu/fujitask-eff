@@ -3,7 +3,7 @@ import sbt._
 import ReleaseTransformations._
 import UpdateReadme.updateReadme
 
-val scala213 = "2.13.1"
+val scala213 = "2.13.15"
 
 lazy val root = (project in file("."))
   .settings(
